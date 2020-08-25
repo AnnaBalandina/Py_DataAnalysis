@@ -1,6 +1,7 @@
 import pandas as pd
 import seaborn as sns
-d = pd.read_csv("https://reneshbedre.github.io/assets/posts/anova/twowayanova.txt", sep="\t")
+data=pd.read_excel('D:/AnnaB/AUI-87/All_24h_AUI-87.xls',index_col=0)
+data.head(30)
 # reshape the d dataframe suitable for statsmodels package 
 # you do not need to reshape if your data is already in stacked format. Compare d and d_melt tables for detail 
 # understanding 
