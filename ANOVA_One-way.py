@@ -8,21 +8,25 @@ from statsmodels.formula.api import ols
 
 #Import 
 data=pd.read_excel('D:/AnnaB/AUI-97/MTT BT-20_48h AUI-97_26.03.xls',index_col=0)
-data.head(10)
+X = data.loc[8:23,"k":"c_500"]
+#Y = data.loc[0:23,"time"]
+X.head(35)
 
-#Create boxplot to visualize my data 
-data.boxplot(column=['k','C_3','C_4', 'C_5','C_10','C_25','C_50','C_100','C_200','C_300', 'C_400','C_500'], grid=False, rot=45)
+#Rename columns & create boxplot 
+X.columns=['Control','3_μg/ml','4_μg/ml','5_μg/ml','10_μg/ml','25_μg/ml','50_μg/ml','100_μg/ml','200_μg/ml','300_μg/ml','400_μg/ml','500_μg/ml']
+X.boxplot(column=['Control','3_μg/ml','4_μg/ml','5_μg/ml','10_μg/ml','25_μg/ml','50_μg/ml','100_μg/ml','200_μg/ml','300_μg/ml','400_μg/ml','500_μg/ml'], grid=False, rot=45)
 
-#ANOVA (ANalysis Of VAriance) test 
-f, p = stats.f_oneway(data['k'], data['C_3'], data['C_4'], data['C_5'],data['C_10'],data['C_25'],data['C_50'],data['C_100'],data['C_200'],data['C_300'],data['C_400'],data['C_500'])
+# F & P factor
+f, p = stats.f_oneway(X['Control'], X['3_μg/ml'], X['4_μg/ml'], X['5_μg/ml'],X['10_μg/ml'],X['25_μg/ml'],X['50_μg/ml'],X['100_μg/ml'],X['200_μg/ml'],X['300_μg/ml'],X['400_μg/ml'],X['500_μg/ml'])
 print(f,p)
-d_melt = pd.melt(data.reset_index(), id_vars=['index'], value_vars=['k', 'C_3', 'C_4', 'C_5', 'C_10', 'C_25', 'C_50', 'C_100', 'C_200', 'C_300', 'C_400', 'C_500'])
+
+d_melt = pd.melt(X.reset_index(), id_vars=['index'], value_vars=['Control','3_μg/ml','4_μg/ml','5_μg/ml','10_μg/ml','25_μg/ml','50_μg/ml','100_μg/ml','200_μg/ml','300_μg/ml','400_μg/ml','500_μg/ml'])
 # replace column names
-d_melt.columns = ['index', 'treatments', 'value']
+d_melt.columns = ['index', 'Concentration', 'value']
 # Ordinary Least Squares (OLS) model
-model = ols('value ~ C(treatments)', data=d_melt).fit()
+model = ols('value ~ C(Concentration)', data=d_melt).fit()
 anova_table = sm.stats.anova_lm(model, typ=2)
 anova_table
 
-#Export data to Excel 
-anova_table.to_excel(r'D:/AnnaB/AUI-97/Anova_AUI-97_48h_Conc(3-500).xlsx', index = False)
+#Export of table
+anova_table.to_excel(r'D:/AnnaB/AUI-97/Results_of_Analisis/Anova_AUI-97_24h_Conc(3-500μg_ml)!!!!.xlsx', index = False)
