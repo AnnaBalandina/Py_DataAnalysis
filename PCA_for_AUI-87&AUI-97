@@ -1,0 +1,72 @@
+#PCA обработка
+
+import numpy as np # linear algebra
+import seaborn as sns
+import matplotlib
+import pandas as pd 
+
+# data processing, CSV file I/O (e.g. pd.read_csv)
+
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
+from sklearn.manifold import TSNE
+from sklearn.preprocessing import StandardScaler
+import array as arr
+
+data=pd.read_excel('D:/AnnaB/AUI-97/PCA_AUI97_Full.xlsx',index_col=None)
+
+#final=pd.read_excel('D:/AnnaB/AUI-97/PCA_AUI97_Full.xlsx',index_col=None)
+
+X = data.loc[0:23,"principal component 1":"principal component 2"]
+Y = data.loc[0:23,"time"]
+final = pd.concat([Y, X], axis= 1)
+
+print(final)
+
+pca = PCA(0.90)
+X_pca = pca.fit_transform(final)
+pca.components_.shape
+
+pca.explained_variance_ratio_
+
+x = X
+y = Y
+
+x = StandardScaler().fit_transform(x)
+
+pca = PCA(n_components=2)
+principalComponents = pca.fit_transform(x)
+
+principalDf = pd.DataFrame(data = principalComponents
+             , columns = ['principal component 1','principal component 2'])
+principalDf.to_excel(r'D:/AnnaB/AUI-97/PCA_3.xlsx', index = False)
+
+yDf = pd.Series(['1','1','1','1','1','1','1','1','1','1','1','1','2','2','2','2','2','2','2','2','2','2','2','2'])
+#yDf = pd.Series(['2','2','2','2','2','2','2','2','2','2','2','2'])
+
+#finalDf = pd.concat([principalDf, yDf], axis= 1)
+#finalDf.head(15)
+
+finalDf = pd.concat([final, yDf], axis= 1)
+finalDf.head(15)
+
+#finalDf.to_excel(r'D:/AnnaB/AUI-97/PCA_Full3.xlsx', index = False)
+
+fig = plt.figure(figsize = (8,8))
+ax = fig.add_subplot(1,1,1) 
+ax.set_xlabel('PC 1', fontsize = 15)
+ax.set_ylabel('PC 2', fontsize = 15)
+ax.set_title('Выживаемость BT-20, AUI-97' "\n" 'Blue = 24h  Red = 48h', fontsize = 20)
+
+
+targets = ['2', '1']
+colors = ['r', 'b']
+for target, color in zip(targets,colors):
+    indicesToKeep = yDf == target
+    ax.scatter(finalDf.loc[indicesToKeep, 'principal component 1']
+               , finalDf.loc[indicesToKeep, 'principal component 2']
+               , c = color
+               , s = 50)
+ax.legend(targets)
+
+ax.grid()
