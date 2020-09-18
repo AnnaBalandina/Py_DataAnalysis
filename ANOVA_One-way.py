@@ -6,7 +6,7 @@ import scipy.stats as stats
 import statsmodels.api as sm
 from statsmodels.formula.api import ols
 
-#Import - Данные за 25.03 BT-20 AUI-87 MTT-Assay & AUI-97
+#Import 
 data=pd.read_excel('D:/AnnaB/AUI-97/MTT BT-20_48h AUI-97_26.03.xls',index_col=0)
 data.head(10)
 
